@@ -1,7 +1,7 @@
 import 'package:finger_voting/core/getit.dart';
 import 'package:finger_voting/providers/authProvider.dart';
 import 'package:finger_voting/views/home.dart';
-import 'package:finger_voting/views/login/scanFinger.dart';
+import 'package:finger_voting/views/widgets/messageDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,19 +23,19 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
     _voterId = TextEditingController();
     _password = TextEditingController();
-    _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    _authProvider = getIt.get<AuthProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
     TextStyle _commonStyle =
-        TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+        const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login to finger voting'),
+          title: const Text('Login to finger voting'),
         ),
         body: Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -87,22 +87,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       : ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              var result =
+                              var biometricCheck = await _authProvider
+                                  .checkForBiometricsAvlability();
+                              if (!biometricCheck.left) {
+                                await HelperWidget.popDialogBox(
+                                    context, biometricCheck.right);
+                                return;
+                              }
+                              var isVerified =
                                   await _authProvider.loginWithIdPassword(
                                       _voterId.text, _password.text);
-                              if (result['isAuthenticated']!) {
-                                if (result['isFingerprintAded']!) {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (ctx) => const HomePage()),
-                                      (route) => false);
-                                } else {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (ctx) =>
-                                              const FingerprintScreen()),
-                                      (route) => false);
-                                }
+                              if (isVerified) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (ctx) => const HomePage()),
+                                    (route) => false);
                               }
                             }
                           },

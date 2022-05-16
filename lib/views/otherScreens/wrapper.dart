@@ -13,12 +13,13 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  Future<bool>? _checkLoginState;
+  late Future<bool> _checkLoginState;
   Future<bool> checkLoginState() async {
     var preference = await SharedPreferences.getInstance();
-    var loginData = preference.getString(Constants.isLoggedIn);
+    var loginData = preference.getBool(Constants.isLoggedIn);
     await Future.delayed(const Duration(seconds: 2));
-    return loginData != null;
+    print('login data : $loginData ');
+    return loginData != null && loginData;
   }
 
   @override
@@ -35,6 +36,7 @@ class _WrapperState extends State<Wrapper> {
           if (snp.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
           }
+          print('smap dta : ${snp.data}');
           if (snp.data!) {
             return const HomePage();
           } else {
