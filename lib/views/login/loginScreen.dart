@@ -87,13 +87,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       : ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              var biometricCheck = await _authProvider
-                                  .checkForBiometricsAvlability();
-                              if (!biometricCheck.left) {
-                                await HelperWidget.popDialogBox(
-                                    context, biometricCheck.right);
-                                return;
-                              }
+                              // var biometricCheck = await _authProvider
+                              //     .checkForBiometricsAvlability();
+                              // print('biometric check : ${biometricCheck.left}');
+
+                              // if (!biometricCheck.left) {
+                              //   await HelperWidget.popDialogBox(
+                              //       context, biometricCheck.right);
+                              //   return;
+                              // }
                               var isVerified =
                                   await _authProvider.loginWithIdPassword(
                                       _voterId.text, _password.text);

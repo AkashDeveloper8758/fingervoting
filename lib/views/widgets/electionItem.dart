@@ -1,11 +1,12 @@
 import 'package:finger_voting/models/electionMode.dart';
-import 'package:finger_voting/views/candidateScreen.dart';
+import 'package:finger_voting/views/widgets/candidateScreen.dart';
 import 'package:flutter/material.dart';
 
 class ElectionItem extends StatelessWidget {
-  ElectionModel electionModel;
-  int count;
-  ElectionItem({Key? key, required this.electionModel, required this.count})
+  final ElectionModel electionModel;
+  final int count;
+  const ElectionItem(
+      {Key? key, required this.electionModel, required this.count})
       : super(key: key);
 
   @override
@@ -13,16 +14,15 @@ class ElectionItem extends StatelessWidget {
     TextStyle mystyle =
         const TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) =>
-                  CandidateScreen(electionName: this.electionModel.name)));
+              builder: (ctx) => CandidateScreen(electionModel: electionModel)));
         },
-        leading: Text(this.count.toString() + ' : ', style: mystyle),
+        leading: Text(count.toString() + ' : ', style: mystyle),
         tileColor: Colors.orange[100],
-        title: Text(this.electionModel.name, style: mystyle),
+        title: Text(electionModel.name, style: mystyle),
       ),
     );
   }

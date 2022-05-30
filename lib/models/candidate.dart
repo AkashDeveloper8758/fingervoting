@@ -1,26 +1,35 @@
-import 'dart:convert';
-
 class CandidateModel {
   String candidateId;
   String name;
-  String imageUrl;
-  bool isVoted;
-  CandidateModel({
-    required this.candidateId,
-    required this.name,
-    required this.imageUrl,
-    this.isVoted = false,
-  });
+  bool isVoted = false;
+  int age;
+  String partyName;
+  String electionId;
+  List<String> votersList;
+
+  CandidateModel(
+    this.candidateId,
+    this.name,
+    this.isVoted,
+    this.age,
+    this.partyName,
+    this.electionId,
+    this.votersList,
+  );
 
   factory CandidateModel.fromMap(Map<String, dynamic> map) {
     return CandidateModel(
-      candidateId: map['candidateId'],
-      name: map['name'],
-      imageUrl: map['imageUrl'],
-      isVoted: map['isVoted'],
-    );
+        map['candidateId'] ?? '',
+        map['name'] ?? '',
+        false,
+        map['age']?.toInt() ?? 0,
+        map['partyName'] ?? '',
+        map['electionId'] ?? '',
+        List<String>.from(map['votersList']));
   }
 
   @override
-  String toString() => 'CandidateModel(candidateId: $candidateId, name: $name)';
+  String toString() {
+    return 'CandidateModel(candidateId: $candidateId, name: $name, isVoted: $isVoted, age: $age, partyName: $partyName, electionId: $electionId)';
+  }
 }

@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 
 class CandidateItem extends StatelessWidget {
   final CandidateModel candidateModel;
-  const CandidateItem({Key? key, required this.candidateModel})
+  final String electionId;
+  const CandidateItem(
+      {Key? key, required this.candidateModel, required this.electionId})
       : super(key: key);
 
   popDialogBox(BuildContext context, CandidateModel candidateModel) async {
@@ -14,8 +16,8 @@ class CandidateItem extends StatelessWidget {
       builder: (ctx) => Dialog(
           child: GestureDetector(
               onTap: () {
-                Provider.of<CandidateProvider>(context, listen: false)
-                    .voteForCandidate(candidateModel);
+                // Provider.of<CandidateProvider>(context, listen: false)
+                //     .voteForCandidate(candidateModel);
                 Navigator.pop(ctx);
               },
               child: Container(
@@ -56,23 +58,36 @@ class CandidateItem extends StatelessWidget {
         child: ListTile(
           contentPadding: const EdgeInsets.all(8),
           tileColor: Colors.orange[100],
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(candidateModel.imageUrl),
-            radius: 28,
-          ),
-          trailing: ElevatedButton(
-            child: const Text('Vote'),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                    candidateModel.isVoted ? Colors.grey : Colors.orange)),
-            onPressed: () async {
-              if (!candidateModel.isVoted) {
-                var isVoted =
-                    await Provider.of<CandidateProvider>(context, listen: false)
-                        .voteForCandidate(candidateModel);
-                if (isVoted) {
-                  popDialogBox(context, candidateModel);
-                }
+          leading: const Icon(Icons.person),
+          trailing: Consumer<CandidateProvider>(
+            builder: (context, value, _) {
+              var currentvoting = value.getCurrentVotingCandidate;
+              if (currentvoting != null &&
+                  currentvoting == candidateModel.candidateId) {
+                return const SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: Center(child: CircularProgressIndicator()));
+              } else {
+                return ElevatedButton(
+                  child: Text(candidateModel.isVoted ? 'voted' : 'Vote'),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          candidateModel.isVoted
+                              ? Colors.grey
+                              : Colors.orange)),
+                  onPressed: () async {
+                    if (!candidateModel.isVoted) {
+                      var isVoted = await Provider.of<CandidateProvider>(
+                              context,
+                              listen: false)
+                          .voteForCandidate(candidateModel, electionId);
+                      if (isVoted) {
+                        popDialogBox(context, candidateModel);
+                      }
+                    }
+                  },
+                );
               }
             },
           ),

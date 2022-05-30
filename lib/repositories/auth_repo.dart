@@ -7,6 +7,8 @@ class AuthRepository {
   final _localAuth = auth.LocalAuthentication();
 
   Future<Twin<bool, String>> authenticateWithBiometric() async {
+    // -------------- test
+    // return Twin(true, '');
     try {
       var didAuthenticate = await _localAuth.authenticate(
         localizedReason: 'Please authentication for secure voting',
@@ -21,19 +23,21 @@ class AuthRepository {
     }
   }
 
-  Future<Twin<bool, String>> checkForBiometricsAvlability() async {
-    var cancheck = await _localAuth.canCheckBiometrics;
-    if (cancheck) {
-      var availableBio = await _localAuth.getAvailableBiometrics();
-      if (availableBio.isNotEmpty) {
-        if (availableBio.contains(auth.BiometricType.strong)) {
-          // return await authenticateWithBiometric();
-          return Twin(true, 'no biometric added to this device');
-        }
-      } else {
-        return Twin(false, 'no biometric added to this device');
-      }
-    }
-    return Twin(false, 'Biometrics are not available on this device');
-  }
+  // Future<Twin<bool, String>> checkForBiometricsAvlability() async {
+  // -------------- test
+  // return Twin(true, '');
+  //   var cancheck = await _localAuth.canCheckBiometrics;
+  //   if (cancheck) {
+  //     var availableBio = await _localAuth.getAvailableBiometrics();
+  //     if (availableBio.isNotEmpty) {
+  //       if (availableBio.contains(auth.BiometricType.strong)) {
+  //         // return await authenticateWithBiometric();
+  //         return Twin(true, 'no biometric added to this device');
+  //       }
+  //     } else {
+  //       return Twin(false, 'no biometric added to this device');
+  //     }
+  //   }
+  //   return Twin(false, 'Biometrics are not available on this device');
+  // }
 }
