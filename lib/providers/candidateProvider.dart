@@ -21,6 +21,7 @@ class CandidateProvider extends ChangeNotifier {
 
   String? get getCurrentVotingCandidate => _votingCandidateid;
   List<ElectionModel> get getElectionsList => _elections;
+  String get getUserId => _userId!;
   CandidateProvider(this._apiRepository);
 
   updateVoterId() async {
@@ -54,6 +55,13 @@ class CandidateProvider extends ChangeNotifier {
           c.isVoted = true;
         }
       }
+      // update other candidate if any of them is already voted.
+      var isVotedSome = candidates.any((element) => element.isVoted = true);
+      if (isVotedSome) {
+        for (var e in candidates) {
+          e.isVotedSomeoneElse = true;
+        }
+      }
       _listOfCandidates[electionId] = candidates;
       return candidates;
     }
@@ -84,7 +92,6 @@ class CandidateProvider extends ChangeNotifier {
     try {
       var isFingerAuthenticated =
           await _authRepository.authenticateWithBiometric();
-      print('is fingerprint auth : ${isFingerAuthenticated.left}');
       if (isFingerAuthenticated.left) {
         _votingCandidateid = candidateModel.candidateId;
         notifyListeners();
@@ -92,7 +99,6 @@ class CandidateProvider extends ChangeNotifier {
             _userId!, candidateModel.candidateId);
         _votingCandidateid = null;
         notifyListeners();
-        print('isvoted : $isVoted');
 
         if (isVoted) {
           updateVoteStatus(candidateModel, electionId);
@@ -118,13 +124,16 @@ class CandidateProvider extends ChangeNotifier {
   // }
 
   updateVoteStatus(CandidateModel candidate, String electionId) {
-    // for (var element in _listOfCandidates[electionId]!) {
-    //   element.isVoted = false;
-    // }
     _listOfCandidates[electionId]!
         .firstWhere((element) => element.candidateId == candidate.candidateId)
         .isVoted = true;
-    print('notifying voters : --------');
+    //* make every other candidate isvotedSomeoneElse = true
+    for (var e in _listOfCandidates[electionId]!) {
+      if (e.candidateId != candidate.candidateId) {
+        e.isVotedSomeoneElse = true;
+      }
+    }
+
     notifyListeners();
   }
 }

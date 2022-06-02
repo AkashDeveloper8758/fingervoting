@@ -20,10 +20,12 @@ class CandidateScreen extends StatefulWidget {
 class _CandidateScreenState extends State<CandidateScreen> {
   late CandidateProvider candidateProvider;
   late Future<List<CandidateModel>> _candidateFuture;
+  late var currentUserId;
 
   @override
   void initState() {
     candidateProvider = getIt.get<CandidateProvider>();
+    currentUserId = candidateProvider.getUserId;
     _candidateFuture = candidateProvider
         .fetchCandidatesByElectionId(widget.electionModel.electionId);
     super.initState();
@@ -70,6 +72,8 @@ class _CandidateScreenState extends State<CandidateScreen> {
                                     itemCount: candidateItems.length,
                                     itemBuilder: (ctx, i) {
                                       return CandidateItem(
+                                        key: ValueKey(
+                                            candidateItems[i].candidateId),
                                         candidateModel: candidateItems[i],
                                         electionId: electionId,
                                       );

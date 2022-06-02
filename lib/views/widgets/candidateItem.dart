@@ -53,49 +53,57 @@ class CandidateItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(8),
-          tileColor: Colors.orange[100],
-          leading: const Icon(Icons.person),
-          trailing: Consumer<CandidateProvider>(
-            builder: (context, value, _) {
-              var currentvoting = value.getCurrentVotingCandidate;
-              if (currentvoting != null &&
-                  currentvoting == candidateModel.candidateId) {
-                return const SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: Center(child: CircularProgressIndicator()));
-              } else {
-                return ElevatedButton(
-                  child: Text(candidateModel.isVoted ? 'voted' : 'Vote'),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          candidateModel.isVoted
+    print(
+        'name : ${candidateModel.name} : isVoted : ${candidateModel.isVoted} someonelse: ${candidateModel.isVotedSomeoneElse} ');
+    return Consumer<CandidateProvider>(builder: (context, value, child) {
+      var currentvoting = value.getCurrentVotingCandidate;
+      return Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          child: ListTile(
+              contentPadding: const EdgeInsets.all(8),
+              tileColor: candidateModel.isVoted
+                  ? Colors.blue[100]
+                  : candidateModel.isVotedSomeoneElse
+                      ? Colors.grey[300]
+                      : Colors.orange[100],
+              leading: const Icon(Icons.person),
+              title: Text(candidateModel.name,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: candidateModel.isVoted
+                          ? Colors.blue[700]
+                          : candidateModel.isVotedSomeoneElse
                               ? Colors.grey
-                              : Colors.orange)),
-                  onPressed: () async {
-                    if (!candidateModel.isVoted) {
-                      var isVoted = await Provider.of<CandidateProvider>(
-                              context,
-                              listen: false)
-                          .voteForCandidate(candidateModel, electionId);
-                      if (isVoted) {
-                        popDialogBox(context, candidateModel);
-                      }
-                    }
-                  },
-                );
-              }
-            },
-          ),
-          title: Text(candidateModel.name,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.orange[700])),
-        ));
+                              : Colors.orange[700])),
+              trailing: (currentvoting != null &&
+                      currentvoting == candidateModel.candidateId)
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: Center(child: CircularProgressIndicator()))
+                  : ElevatedButton(
+                      child: Text(candidateModel.isVoted ? 'voted' : 'Vote'),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              (candidateModel.isVoted ||
+                                      candidateModel.isVotedSomeoneElse)
+                                  ? Colors.grey
+                                  : Colors.orange)),
+                      onPressed: () async {
+                        if (!candidateModel.isVoted &&
+                            !candidateModel.isVotedSomeoneElse) {
+                          // return;
+                          var isVoted = await Provider.of<CandidateProvider>(
+                                  context,
+                                  listen: false)
+                              .voteForCandidate(candidateModel, electionId);
+                          if (isVoted) {
+                            popDialogBox(context, candidateModel);
+                          }
+                        }
+                      },
+                    )));
+    });
   }
 }

@@ -6,16 +6,11 @@ class CandidateModel {
   String partyName;
   String electionId;
   List<String> votersList;
+  bool isVotedSomeoneElse = false;
 
-  CandidateModel(
-    this.candidateId,
-    this.name,
-    this.isVoted,
-    this.age,
-    this.partyName,
-    this.electionId,
-    this.votersList,
-  );
+  CandidateModel(this.candidateId, this.name, this.isVoted, this.age,
+      this.partyName, this.electionId, this.votersList,
+      {this.isVotedSomeoneElse = false});
 
   factory CandidateModel.fromMap(Map<String, dynamic> map) {
     return CandidateModel(
