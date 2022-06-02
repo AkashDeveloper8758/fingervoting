@@ -37,6 +37,8 @@ class _HomePageState extends State<HomePage> {
       var value = await authProvider.authenticateOnly();
       if (!value.left) {
         authProvider.logout();
+        candidateProvider.clearData();
+
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (ctx) => const LoginScreen()),
             (route) => false);
@@ -53,6 +55,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
               onPressed: () {
                 authProvider.logout();
+                candidateProvider.clearData();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (ctx) => const LoginScreen()),
                     (route) => false);

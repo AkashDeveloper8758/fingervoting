@@ -63,7 +63,7 @@ class ApiClient {
       body: jsonEncode(body),
     );
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return response.body;
     } else {
       throw Exception(response.body);
     }

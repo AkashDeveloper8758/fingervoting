@@ -36,6 +36,10 @@ class CandidateProvider extends ChangeNotifier {
     await getElections(forced: true);
   }
 
+  Future clearData() async {
+    _listOfCandidates = {};
+  }
+
   Future<List<CandidateModel>> fetchCandidatesByElectionId(
       String electionId) async {
     if (_listOfCandidates.containsKey(electionId) &&
@@ -76,23 +80,30 @@ class CandidateProvider extends ChangeNotifier {
 
   Future<bool> voteForCandidate(
       CandidateModel candidateModel, String electionId) async {
-    var isFingerAuthenticated =
-        await _authRepository.authenticateWithBiometric();
-    if (isFingerAuthenticated.left) {
-      _votingCandidateid = candidateModel.candidateId;
-      notifyListeners();
-      var isVoted = await _apiRepository.voteCandidate(
-          _userId!, candidateModel.candidateId);
-      _votingCandidateid = null;
-      notifyListeners();
+    try {
+      var isFingerAuthenticated =
+          await _authRepository.authenticateWithBiometric();
+      print('is fingerprint auth : ${isFingerAuthenticated.left}');
+      if (isFingerAuthenticated.left) {
+        _votingCandidateid = candidateModel.candidateId;
+        notifyListeners();
+        var isVoted = await _apiRepository.voteCandidate(
+            _userId!, candidateModel.candidateId);
+        _votingCandidateid = null;
+        notifyListeners();
+        print('isvoted : $isVoted');
 
-      if (isVoted) {
-        updateVoteStatus(candidateModel, electionId);
-        return true;
+        if (isVoted) {
+          updateVoteStatus(candidateModel, electionId);
+          return true;
+        }
+        return false;
       }
       return false;
+    } catch (err) {
+      print('error on voting : $err ');
+      return false;
     }
-    return false;
   }
 
 // fill function, update values in priovder and preference, does not return anything
@@ -112,6 +123,7 @@ class CandidateProvider extends ChangeNotifier {
     _listOfCandidates[electionId]!
         .firstWhere((element) => element.candidateId == candidate.candidateId)
         .isVoted = true;
+    print('notifying voters : --------');
     notifyListeners();
   }
 }

@@ -11,7 +11,7 @@ main() {
       bool check = false;
       var apiClient = ApiClient(Client());
       var apiRepo = ApiRepository(apiClient);
-      var res = await apiRepo.voteCandidate('master', '123');
+      var res = await apiRepo.voteCandidate('ddman', 'cand1');
       print('voting result: $res');
       expect(res, true);
     },

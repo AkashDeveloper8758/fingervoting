@@ -53,10 +53,12 @@ class ApiRepository {
 
   Future<bool> voteCandidate(String voterId, String candidateid) async {
     try {
+      print('client : $voterId $candidateid ');
       await _apiClient
-          .get('voteCandidate?voterId=$voterId&candidateId=$candidateid');
+          .post('voteCandidate?voterId=$voterId&candidateId=$candidateid', {});
       return true;
     } catch (err) {
+      print('error on vote her: $err');
       return false;
     }
   }
