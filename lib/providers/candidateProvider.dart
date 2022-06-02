@@ -32,11 +32,12 @@ class CandidateProvider extends ChangeNotifier {
   }
 
   Future refreshAllData() async {
-    _listOfCandidates = {};
+    clearData();
     await getElections(forced: true);
   }
 
   Future clearData() async {
+    _elections = [];
     _listOfCandidates = {};
   }
 
@@ -117,9 +118,9 @@ class CandidateProvider extends ChangeNotifier {
   // }
 
   updateVoteStatus(CandidateModel candidate, String electionId) {
-    for (var element in _listOfCandidates[electionId]!) {
-      element.isVoted = false;
-    }
+    // for (var element in _listOfCandidates[electionId]!) {
+    //   element.isVoted = false;
+    // }
     _listOfCandidates[electionId]!
         .firstWhere((element) => element.candidateId == candidate.candidateId)
         .isVoted = true;

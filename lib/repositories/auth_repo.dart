@@ -7,7 +7,7 @@ class AuthRepository {
   final _localAuth = auth.LocalAuthentication();
 
   Future<Twin<bool, String>> authenticateWithBiometric() async {
-    // // !-------------- test
+    // -------------- test
     // return Twin(true, '');
     try {
       var didAuthenticate = await _localAuth.authenticate(
