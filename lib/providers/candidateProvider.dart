@@ -49,6 +49,7 @@ class CandidateProvider extends ChangeNotifier {
       return _listOfCandidates[electionId] ?? [];
     }
     var candidates = await _apiRepository.getCandidateByElectionId(electionId);
+
     if (candidates != null) {
       for (var c in candidates) {
         if (c.votersList.contains(_userId)) {
@@ -56,7 +57,7 @@ class CandidateProvider extends ChangeNotifier {
         }
       }
       // update other candidate if any of them is already voted.
-      var isVotedSome = candidates.any((element) => element.isVoted = true);
+      var isVotedSome = candidates.any((element) => element.isVoted == true);
       if (isVotedSome) {
         for (var e in candidates) {
           e.isVotedSomeoneElse = true;

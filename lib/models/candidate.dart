@@ -8,19 +8,26 @@ class CandidateModel {
   List<String> votersList;
   bool isVotedSomeoneElse = false;
 
-  CandidateModel(this.candidateId, this.name, this.isVoted, this.age,
-      this.partyName, this.electionId, this.votersList,
-      {this.isVotedSomeoneElse = false});
+  CandidateModel(
+      {required this.candidateId,
+      required this.name,
+      required this.isVoted,
+      required this.age,
+      required this.partyName,
+      required this.electionId,
+      required this.votersList,
+      required this.isVotedSomeoneElse});
 
   factory CandidateModel.fromMap(Map<String, dynamic> map) {
     return CandidateModel(
-        map['candidateId'] ?? '',
-        map['name'] ?? '',
-        false,
-        map['age']?.toInt() ?? 0,
-        map['partyName'] ?? '',
-        map['electionId'] ?? '',
-        List<String>.from(map['votersList']));
+        candidateId: map['candidateId'] ?? '',
+        name: map['name'] ?? '',
+        isVoted: false,
+        age: map['age']?.toInt() ?? 0,
+        partyName: map['partyName'] ?? '',
+        electionId: map['electionId'] ?? '',
+        votersList: List<String>.from(map['votersList']),
+        isVotedSomeoneElse: false);
   }
 
   @override
